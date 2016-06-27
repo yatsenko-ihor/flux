@@ -15,9 +15,12 @@ Require-Bundle: org.eclipse.flux.client.java.osgi,
  org.eclipse.jface,
  org.eclipse.jface.text,
  org.eclipse.jdt.core.manipulation,
- org.eclipse.ltk.core.refactoring
+ org.eclipse.ltk.core.refactoring,
+ org.eclipse.jface.databinding;bundle-version="1.6.200",
+ org.eclipse.ui;bundle-version="3.106.1"
 Bundle-Vendor: Eclipse.org - Flux
 Import-Package: org.apache.commons.codec.digest,
+ org.eclipse.flux.jdt.services,
  org.osgi.service.component;version="1.2.2",
  org.osgi.service.component.annotations;version="1.2.0"
 Export-Package: org.eclipse.flux.jdt.services

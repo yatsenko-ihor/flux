@@ -10,10 +10,11 @@
  *******************************************************************************/
 package org.eclipse.jdt.internal.compiler.lookup;
 
+import org.eclipse.jdt.internal.compiler.ast.IntersectionCastTypeReference;
 import org.eclipse.jdt.internal.compiler.ast.Wildcard;
 import org.eclipse.jdt.internal.compiler.util.SimpleLookupTable;
 
-
+@SuppressWarnings("restriction")
 public class TypeBindingVisitor {
 
 	private SimpleLookupTable visitedCache;
@@ -42,7 +43,8 @@ public class TypeBindingVisitor {
 		return true;  // continue traversal.
 	}
 	
-	public boolean visit(IntersectionCastTypeBinding intersectionCastTypeBinding) {
+	//public boolean visit(IntersectionCastTypeBinding intersectionCastTypeBinding) {
+	public boolean visit(IntersectionCastTypeReference intersectionCastTypeBinding) {
 		return true;  // continue traversal.
 	}
 	
@@ -60,6 +62,7 @@ public class TypeBindingVisitor {
 	    }
 	}
 
+	
 	public static void visit(TypeBindingVisitor visitor, TypeBinding type) {
 
 		if (type == null) 
@@ -101,7 +104,6 @@ public class TypeBindingVisitor {
 				break;
 
 			case Binding.WILDCARD_TYPE:
-			case Binding.INTERSECTION_TYPE:
 		        WildcardBinding wildcard = (WildcardBinding) type;
 		        if (visitor.visit(wildcard)) {
 		        	if (wildcard.boundKind != Wildcard.UNBOUND) {
@@ -128,10 +130,10 @@ public class TypeBindingVisitor {
 				}
 				break;
 			
-			case Binding.INTERSECTION_CAST_TYPE:
-				IntersectionCastTypeBinding intersectionCastTypeBinding = (IntersectionCastTypeBinding) type;
-				if (visitor.visit(intersectionCastTypeBinding))
-					visit(visitor, intersectionCastTypeBinding.intersectingTypes);
+			case Binding.INTERSECTION_TYPE:
+				//IntersectionCastTypeBinding intersectionCastTypeBinding = (IntersectionCastTypeBinding) type;
+				//if (visitor.visit(intersectionCastTypeBinding))
+					//visit(visitor, intersectionCastTypeBinding.intersectingTypes);
 				break;
 				
 			case Binding.POLY_TYPE:

@@ -37,42 +37,62 @@ public class LiveEditCoordinator {
 		this.liveEditConnectors = new CopyOnWriteArrayList<>();
 		this.messageHandlers = new ArrayList<IMessageHandler>(4);
 		
-		IMessageHandler startLiveUnit = new MessageHandler("liveResourceStarted") {
-			@Override
-			public void handle(String messageType, JSONObject message) {
-				startLiveUnit(message);
-			}
-		};
+		IMessageHandler startLiveUnit = createStartLiveUnitMessageHandler();
 		messagingConnector.addMessageHandler(startLiveUnit);
 		messageHandlers.add(startLiveUnit);
 		
-		IMessageHandler startLiveUnitResponse = new MessageHandler("liveResourceStartedResponse") {
-			@Override
-			public void handle(String messageType, JSONObject message) {
-				startLiveUnitResponse(message);
-			}
-		};
+		IMessageHandler startLiveUnitResponse = createStartLiveUnitResponseMessageHandler();
 		messagingConnector.addMessageHandler(startLiveUnitResponse);
 		messageHandlers.add(startLiveUnitResponse);
 		
+		IMessageHandler modelChangedHandler = createModelChangedHandler();
+		messagingConnector.addMessageHandler(modelChangedHandler);
+		messageHandlers.add(modelChangedHandler);
+		
+		// Listen to the internal broadcast channel to send out info about current live edit units
+		IMessageHandler liveResourceRequestUnits = createLiveResourceRequestUnitsMessageHandler();
+		messagingConnector.addMessageHandler(liveResourceRequestUnits);
+		messageHandlers.add(liveResourceRequestUnits);
+	}
+
+	private IMessageHandler createLiveResourceRequestUnitsMessageHandler() {
+		IMessageHandler liveResourceRequestUnits = new MessageHandler("getLiveResourcesRequest") {
+			@Override
+			public void handle(String messageType, JSONObject message) {
+				sendLiveUnits(message);
+			}
+		};
+		return liveResourceRequestUnits;
+	}
+
+	private IMessageHandler createModelChangedHandler() {
 		IMessageHandler modelChangedHandler = new MessageHandler("liveResourceChanged") {
 			@Override
 			public void handle(String messageType, JSONObject message) {
 				modelChanged(message);
 			}
 		};
-		messagingConnector.addMessageHandler(modelChangedHandler);
-		messageHandlers.add(modelChangedHandler);
-		
-		// Listen to the internal broadcast channel to send out info about current live edit units
-		IMessageHandler liveUnits = new MessageHandler("getLiveResourcesRequest") {
+		return modelChangedHandler;
+	}
+
+	private IMessageHandler createStartLiveUnitMessageHandler() {
+		IMessageHandler startLiveUnit = new MessageHandler("liveResourceStarted") {
 			@Override
 			public void handle(String messageType, JSONObject message) {
-				sendLiveUnits(message);
+				startLiveUnit(message);
 			}
 		};
-		messagingConnector.addMessageHandler(liveUnits);
-		messageHandlers.add(liveUnits);
+		return startLiveUnit;
+	}
+
+	private IMessageHandler createStartLiveUnitResponseMessageHandler() {
+		IMessageHandler startLiveUnitResponse = new MessageHandler("liveResourceStartedResponse") {
+			@Override
+			public void handle(String messageType, JSONObject message) {
+				startLiveUnitResponse(message);
+			}
+		};
+		return startLiveUnitResponse;
 	}
 	
 	protected void startLiveUnit(JSONObject message) {

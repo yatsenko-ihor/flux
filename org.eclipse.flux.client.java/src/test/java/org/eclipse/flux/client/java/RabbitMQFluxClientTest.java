@@ -256,7 +256,7 @@ public class RabbitMQFluxClientTest extends AbstractFluxClientTest {
 		
 		Process<Void> service = new Process<Void>(SUPER_USER) {
 			protected Void execute() throws Exception {
-				conn.addMessageHandler(new RequestResponseHandler(conn, "helloRequest") {
+				RequestResponseHandler requestResponseMessageHandler = new RequestResponseHandler(conn, "helloRequest") {
 					@Override
 					protected JSONObject fillResponse(String type, JSONObject req, JSONObject res) throws Exception {
 						String cmd = req.getString("cmd"); 
@@ -271,7 +271,8 @@ public class RabbitMQFluxClientTest extends AbstractFluxClientTest {
 							throw new IllegalArgumentException("Unkown command: "+cmd);
 						}
 					}
-				});
+				};
+				conn.addMessageHandler(requestResponseMessageHandler);
 				serviceStarted.resolve(null);
 				
 				//Wait for quit request
